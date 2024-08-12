@@ -6,10 +6,16 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <div class="overall">
-    <div class="header mb-3">
-      <RouterLink to="/">Home</RouterLink> | <RouterLink to="/Week1">Week1</RouterLink> |
-      <RouterLink to="/Week2">Week2</RouterLink> |
+    <div class="nav mb-3">
+      <RouterLink to="/">Home</RouterLink> | <RouterLink to="/week1">Week1</RouterLink> |
+      <RouterLink to="/week2">Week2</RouterLink>|
     </div>
-    <router-view />
+    <RouterView />
   </div>
 </template>
+
+<style scoped>
+.nav {
+  text-decoration: none;
+}
+</style>
