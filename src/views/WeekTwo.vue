@@ -90,11 +90,30 @@
         {{ confirmRemark }}
       </div>
     </div>
+    <div class="title my-3">Log Out</div>
+    <div class="wrap row gap-2 align-items-end">
+      <div class="col-md-4">
+        <label for="tokenLogout" class="form-label">Token</label>
+        <input
+          type="text"
+          class="form-control"
+          id="tokenLogout"
+          placeholder="token"
+          v-model="token"
+        />
+      </div>
+      <div class="col-md-2">
+        <button type="button" class="btn btn-primary" @click="logOut()">Log out</button>
+      </div>
+      <div class="col-md-12 remark" v-if="logoutRemark !== ''">
+        {{ logoutRemark }}
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import User from '../middleware/user-api.js'
+import User from '../services/userService.js'
 import { ref, reactive } from 'vue'
 
 const signupEmail = ref('')
@@ -105,6 +124,7 @@ const nickname = ref('User')
 const signupRemark = ref('')
 const loginRemark = ref('')
 const confirmRemark = ref('')
+const logoutRemark = ref('')
 const token = ref('')
 const user = reactive(new User())
 
@@ -143,6 +163,15 @@ async function confirm() {
     alert('Before submit the form, please finish it!')
   }
 }
+
+async function logOut() {
+  if (token.value !== '') {
+    const res = await user.logout(token.value)
+    logoutRemark.value = res
+  } else {
+    alert('Before submit the form, please finish it!')
+  }
+}
 </script>
 
 <style scoped>
@@ -163,7 +192,7 @@ async function confirm() {
   font-weight: bold;
 }
 .wrap {
-  padding: 12px 18px;
+  padding: 12px 18px 18px;
   border-bottom: 1px solid #000000;
 }
 .remark {
