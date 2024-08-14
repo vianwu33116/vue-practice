@@ -1,18 +1,13 @@
 import axios from 'axios'
+import cookieService from './cookieService'
 const url = `https://todolist-api.hexschool.io`
-const token = document.cookie
-  .split('; ')
-  .find((row) => row.startsWith('todoToken='))
-  ?.split('=')[1]
-
-const config = {
-  headers: {
-    Authorization: token
-  }
-}
 
 function getToDoList() {
-  return axios.get(`${url}/todos`, config)
+  return axios.get(`${url}/todos`, {
+    headers: {
+      Authorization: cookieService.getCookie('todoToken')
+    }
+  })
 }
 
 function addToDo(content) {
@@ -21,7 +16,11 @@ function addToDo(content) {
     {
       content: content
     },
-    config
+    {
+      headers: {
+        Authorization: cookieService.getCookie('todoToken')
+      }
+    }
   )
 }
 
@@ -31,12 +30,20 @@ function patchToDo(itemId, content) {
     {
       content: content
     },
-    config
+    {
+      headers: {
+        Authorization: cookieService.getCookie('todoToken')
+      }
+    }
   )
 }
 
 function deleteToDo(itemId) {
-  return axios.delete(`${url}/todos/${itemId}`, config)
+  return axios.delete(`${url}/todos/${itemId}`, {
+    headers: {
+      Authorization: cookieService.getCookie('todoToken')
+    }
+  })
 }
 
 const todoService = {

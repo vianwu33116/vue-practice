@@ -1,4 +1,5 @@
 import axios from 'axios'
+import cookieService from './cookieService'
 const url = `https://todolist-api.hexschool.io`
 
 export default class User {
@@ -13,17 +14,17 @@ export default class User {
   async login(userData) {
     try {
       const res = await axios.post(`${url}/users/sign_in`, userData)
-      document.cookie = `todoToken=${res.data.token}`
+      cookieService.setCookie('todoToken', res.data.token)
       return `Login Success!`
     } catch (err) {
       return err.response.data.message
     }
   }
-  async checkout(token) {
+  async checkout() {
     try {
       const res = await axios.get(`${url}/users/checkout`, {
         headers: {
-          Authorization: token
+          Authorization: cookieService.getCookie('todoToken')
         }
       })
       return `Valid! ${res.data.uid}`
@@ -32,14 +33,14 @@ export default class User {
     }
   }
 
-  async logout(token) {
+  async logout() {
     try {
       const res = await axios.post(`${url}/users/sign_out`, null, {
         headers: {
-          Authorization: token
+          Authorization: cookieService.getCookie('todoToken')
         }
       })
-      document.cookie = `todoToken=${''}`
+      cookieService.cleanCookie('todoToken')
       return `${res.data.message}`
     } catch (err) {
       return err.response.data.message
