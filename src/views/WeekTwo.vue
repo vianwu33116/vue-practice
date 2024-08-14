@@ -139,9 +139,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import User from '../services/userService.js'
 import todoService from '@/services/todoService.js'
+import cookieService from '@/services/cookieService.js'
 
 const signupEmail = ref('')
 const signupPwd = ref('')
@@ -178,6 +179,16 @@ async function addTodo() {
   }
 }
 
+async function deleteTodo(item) {
+  try {
+    const res = await todoService.deleteToDo(item.id)
+    console.log(res)
+    renderTodoList()
+  } catch (err) {
+    console.log(err.response.data.message)
+  }
+}
+
 //handle user login/out
 async function signUp() {
   if (signupEmail.value !== '' && signupPwd.value !== '') {
@@ -201,10 +212,7 @@ async function logIn() {
     }
     const res = await user.login(userDataObj)
     loginRemark.value = res
-    token.value = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('todoToken='))
-      ?.split('=')[1]
+    token.value = cookieService.getCookie('todoToken')
     verified.value = true
     renderTodoList()
   } else {
@@ -226,6 +234,7 @@ async function logOut() {
     const res = await user.logout(token.value)
     logoutRemark.value = res
     token.value = ''
+    verified.value = false
   } else {
     alert('Before submit the form, please finish it!')
   }
