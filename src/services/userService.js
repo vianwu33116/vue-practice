@@ -13,7 +13,8 @@ export default class User {
   async login(userData) {
     try {
       const res = await axios.post(`${url}/users/sign_in`, userData)
-      return `Login Success! token: ${res.data.token}`
+      document.cookie = `todoToken=${res.data.token}`
+      return `Login Success!`
     } catch (err) {
       return err.response.data.message
     }
@@ -38,6 +39,7 @@ export default class User {
           Authorization: token
         }
       })
+      document.cookie = `todoToken=${''}`
       return `${res.data.message}`
     } catch (err) {
       return err.response.data.message
