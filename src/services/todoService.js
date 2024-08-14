@@ -1,9 +1,13 @@
 import axios from 'axios'
 const url = `https://todolist-api.hexschool.io`
+const token = document.cookie
+  .split('; ')
+  .find((row) => row.startsWith('todoToken='))
+  ?.split('=')[1]
 
 const config = {
   headers: {
-    Authorization: ''
+    Authorization: token
   }
 }
 
