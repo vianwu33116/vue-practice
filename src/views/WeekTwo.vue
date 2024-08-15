@@ -128,10 +128,30 @@
         </div>
       </div>
       <ul class="list todo-list">
-        <li class="list-item" v-for="item in todoList" :key="item.id">
-          <div>{{ item.content }}</div>
-          <button type="button" @click="editTodo(item)">Edit</button>
-          <button type="button" @click="deleteTodo(item)">Delete</button>
+        <li class="list-item row" v-for="item in todoList" :key="item.id">
+          <div class="card" style="width: 18rem">
+            <div class="card-body">
+              <div class="col mb-2">{{ item.content }}</div>
+              <div class="row mb-3" v-if="editItem === item">
+                <input
+                  type="text"
+                  class="form-control col"
+                  id="todoContent"
+                  placeholder="new context"
+                  v-model="newContent"
+                />
+                <button class="col btn btn-light btn-sm mx-2" @click="editTodo(item)">
+                  Confirm
+                </button>
+              </div>
+              <button class="btn btn-primary btn-sm" type="button" @click="openEditMode(item)">
+                Edit
+              </button>
+              <button class="btn btn-secondary btn-sm" type="button" @click="deleteTodo(item)">
+                Delete
+              </button>
+            </div>
+          </div>
         </li>
       </ul>
     </div>
@@ -156,8 +176,14 @@ const logoutRemark = ref('')
 const token = ref('')
 const verified = ref(false)
 const content = ref('')
+const newContent = ref('')
+const editItem = ref(false)
 const todoList = ref([])
 const user = reactive(new User())
+
+function openEditMode(target) {
+  editItem.value = target
+}
 
 //handle todo list
 async function renderTodoList() {
@@ -174,6 +200,7 @@ async function addTodo() {
     const res = await todoService.addToDo(content.value)
     console.log(res)
     renderTodoList()
+    content.value = ''
   } catch (err) {
     console.log(err.response.data.message)
   }
@@ -186,6 +213,22 @@ async function deleteTodo(item) {
     renderTodoList()
   } catch (err) {
     console.log(err.response.data.message)
+  }
+}
+
+async function editTodo(item) {
+  if (newContent.value !== '') {
+    try {
+      const res = await todoService.editToDo(item.id, newContent.value)
+      console.log(res)
+      renderTodoList()
+      editItem.value = false
+      newContent.value = ''
+    } catch (err) {
+      console.log(err.response.data.message)
+    }
+  } else {
+    alert('Please make sure fullfill new context then click confirm!')
   }
 }
 
@@ -242,6 +285,12 @@ async function logOut() {
 </script>
 
 <style scoped>
+ul {
+  padding: 0;
+}
+li {
+  margin: 12px 0;
+}
 .container {
   max-width: 1024px;
 }
@@ -264,5 +313,8 @@ async function logOut() {
 }
 .remark {
   color: #bdbdbd;
+}
+.btn {
+  margin-right: 8px;
 }
 </style>

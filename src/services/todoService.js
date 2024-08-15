@@ -24,8 +24,8 @@ function addToDo(content) {
   )
 }
 
-function patchToDo(itemId, content) {
-  return axios.patch(
+function editToDo(itemId, content) {
+  return axios.put(
     `${url}/todos/${itemId}`,
     {
       content: content
@@ -36,6 +36,14 @@ function patchToDo(itemId, content) {
       }
     }
   )
+}
+
+function toggleToDo(itemId) {
+  return axios.patch(`${url}/todos/${itemId}/toggle`, {
+    headers: {
+      Authorization: cookieService.getCookie('todoToken')
+    }
+  })
 }
 
 function deleteToDo(itemId) {
@@ -49,7 +57,8 @@ function deleteToDo(itemId) {
 const todoService = {
   getToDoList,
   addToDo,
-  patchToDo,
+  editToDo,
+  toggleToDo,
   deleteToDo
 }
 export default todoService
