@@ -8,7 +8,7 @@ import { RouterLink, RouterView } from 'vue-router'
   <div class="overall">
     <div class="nav mb-3">
       <RouterLink to="/">Home</RouterLink> | <RouterLink to="/week1">Week1</RouterLink> |
-      <RouterLink to="/week2">Week2</RouterLink>|
+      <RouterLink to="/week2">Week2</RouterLink> | <RouterLink to="/week3">Week3</RouterLink>
     </div>
     <RouterView />
   </div>
