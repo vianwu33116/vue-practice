@@ -2,20 +2,7 @@
   <div class="mt-5">
     <div class="row container">
       <div class="col-md-5">
-        <div class="list-group">
-          <a
-            href="#"
-            class="list-group-item list-group-item-action"
-            v-for="item in menuList"
-            :key="item.id"
-            @click.prevent="add(item)"
-            ><div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">{{ item.name }}</h5>
-              <small>{{ item.price }}</small>
-            </div>
-            <p class="mb-1">{{ item.description }}</p></a
-          >
-        </div>
+        <MenuList :menuList="menuList" @emitAddItem="add" />
       </div>
       <div class="col-md-7">
         <table class="table">
@@ -31,7 +18,7 @@
           </thead>
           <tbody v-if="sum !== 0">
             <tr v-for="item in checkList" :key="item.id">
-              <td><button type="button" class="btn btn-sm">x</button></td>
+              <td><button type="button" class="btn btn-sm" @click="remove(item)">x</button></td>
               <td>{{ item.name }}</td>
               <td>
                 <small>{{ item.description }}</small>
@@ -80,37 +67,7 @@
     </div>
     <div class="row justify-content-center" v-if="orderSum !== 0">
       <div class="col-8">
-        <div class="card">
-          <div class="card-body">
-            <div class="card-title">
-              <h5>訂單</h5>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">品項</th>
-                    <th scope="col">數量</th>
-                    <th scope="col">小計</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="item in orderList" :key="item.id">
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.amount }}</td>
-                    <td>{{ item.price * item.amount }}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="text-end">
-                備註: <span>{{ finalRemark }}</span>
-              </div>
-              <div class="text-end">
-                <h5>
-                  總計: <span>{{ orderSum }}</span>
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div>
+        <OrderList :orderList="orderList" :finalRemark="finalRemark" :orderSum="orderSum" />
       </div>
     </div>
   </div>
@@ -118,6 +75,8 @@
 <script setup>
 import { ref } from 'vue'
 import { data } from '../assets/data.json'
+import MenuList from '../components/MenuList.vue'
+import OrderList from '../components/OrderList.vue'
 const menuList = ref([])
 const checkList = ref([])
 const orderList = ref([])
@@ -137,6 +96,12 @@ function add(item) {
   }
   checkList.value.push(obj)
   sum.value += obj.price
+}
+
+function remove(item) {
+  const index = checkList.value.indexOf(item)
+  checkList.value.splice(index, 1)
+  handleSumup()
 }
 
 function handleSumup() {
